@@ -1,13 +1,10 @@
-FROM python:3 as build
-
+FROM node:10 AS build-env
 WORKDIR /app
+COPY . .
+RUN npm install --production
 
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
-
-FROM gcr.io/distroless/python3
-COPY --from=build /app .
-
-EXPOSE 4000
-
-CMD ["python", "app.py"]
+FROM gcr.io/distroless/nodejs:10
+COPY --from=build-env /app /app
+WORKDIR /app
+EXPOSE 3000
+CMD ["hello_express.js"]
