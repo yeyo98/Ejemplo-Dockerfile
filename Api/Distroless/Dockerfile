@@ -1,12 +1,12 @@
-FROM python:3
+FROM python:3 as build
 
 WORKDIR /app
 
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-FROM gcr.io/distroless/python3
 
-COPY . .
+FROM gcr.io/distroless/python3
+COPY --from=build /app .
 
 EXPOSE 4000
 
